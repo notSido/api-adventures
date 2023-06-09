@@ -16,9 +16,9 @@ BOOKS = [
 async def first_api():
     return {'message': 'Hello Mischa!'}
 
-@app.get('/books/mybook')
+@app.get('/books')
 async def read_all_books():
-    return{'book_title': 'My Favorite Book'}
+    return BOOKS
 
 @app.get('/books/{author}')
 async def read_books_by_author(author:str):
@@ -50,5 +50,7 @@ async def read_all_books(book_title: str):
     for book in BOOKS:
         if book.get('title').casefold() == book_title.casefold():
             return book
-            
 
+@app.post('/books/create_book')
+async def create_book(new_book=Body()):
+    BOOKS.append(new_book)

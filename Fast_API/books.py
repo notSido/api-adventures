@@ -20,6 +20,25 @@ async def first_api():
 async def read_all_books():
     return BOOKS
 
+#assignment part: create endpoint that fetches all books by
+#an author using either path parameters or query parameters
+@app.get('/books/{author}')
+async def books_by_author(author: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author.casefold():
+            books_to_return.append(book)
+    return books_to_return
+
+#query parameters
+@app.get('/books/')
+async def books_by_author_query(author:str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author.casefold():
+            books_to_return.append(book)
+    return books_to_return
+
 #@app.get('/books/{author}')
 #async def read_books_by_author(author:str):
 #    books_to_return = []
@@ -67,22 +86,3 @@ async def delete_book(book_title: str):
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
             break
-        
-#assignment part: create endpoint that fetches all books by
-#an author using either path parameters or query parameters
-@app.get('/books/{author}')
-async def books_by_author(author: str):
-    books_to_return = []
-    for book in BOOKS:
-        if book.get('author').casefold() == author.casefold():
-            books_to_return.append(book)
-    return book
-    
-#query parameters
-@app.get('/books/')
-async def books_by_author_query(author:str):
-    books_to_return = []
-    for book in BOOKS:
-        if book.get('author').casefold() == author.casefold():
-            books_to_return.append(book)
-    return books_to_return

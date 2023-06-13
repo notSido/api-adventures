@@ -27,7 +27,7 @@ class BookRequest(BaseModel):
     
 
 BOOKS = [
-    Book(1, 'The idiot', 'Fyodor Dostoevsky', 'An exploration of the meaning of love and life', 5),
+    Book(1, 'The idiot', 'Fyodor Dostoevsky', 'An exploration of love and life', 5),
     Book(2, 'Notes from Underground', 'Fyodor Dostoevsky', 'A hyperconscious man reflecting on his life', 3),
     Book(3, 'Lolita', 'Vladimir Nabokov', 'Literature teacher rapes his 12 year old steapdaughter...', 2),
     Book(4, 'Dead Souls', 'Nikolai Gogol', 'An exploration into what people will do attain wealth', 4)

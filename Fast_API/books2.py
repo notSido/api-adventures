@@ -40,7 +40,7 @@ class BookRequest(BaseModel):
 BOOKS = [
     Book(1, 'The idiot', 'Fyodor Dostoevsky', 'An exploration of love and life', 5),
     Book(2, 'Notes from Underground', 'Fyodor Dostoevsky', 'A hyperconscious man reflecting on his life', 3),
-    Book(3, 'Lolita', 'Vladimir Nabokov', 'Literature teacher rapes his 12 year old stepdaughter...', 2),
+    Book(3, 'Lolita', 'Vladimir Nabokov', 'Literature teacher rapes his 12 year old stepdaughter...', 4),
     Book(4, 'Dead Souls', 'Nikolai Gogol', 'A deep look into what people are ready to do to attain wealth', 4)
     
 ]
@@ -64,6 +64,13 @@ async def fetch_book(book_id:int):
         if book.id == book_id:
             return book
 
+@app.get('/books/')
+async def read_book_by_rating(rating:int):
+    books_to_return = []
+    for book in BOOKS:
+        if book.rating == rating:
+            books_to_return.append(book)
+    return books_to_return
             
 #wip delete function
 #@app.delete('/books/delete-book/{book_id}')

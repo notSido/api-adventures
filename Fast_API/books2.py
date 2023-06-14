@@ -26,6 +26,16 @@ class BookRequest(BaseModel):
     description: str = Field(min_length=1, max_length=100)
     rating: int = Field(gt=0, lt=5)
     
+    class Config:
+        schema_extra = {
+            'example': {
+                'title': 'A new book',
+                'author': 'yours truly',
+                'description': 'a new description that i am too lazy to write',
+                'rating': 5
+            }
+        }
+# hello world i am here today to tell you that my name is jeff
 
 BOOKS = [
     Book(1, 'The idiot', 'Fyodor Dostoevsky', 'An exploration of love and life', 5),
@@ -47,7 +57,14 @@ async def create_book(book_request=Body()):
 async def create_book(book_request: BookRequest):
     new_book = Book(**book_request.dict())
     BOOKS.append(find_book_id(new_book))
+    
+@app.get('/books/{book_id}')
+async def fetch_book(book_id:int):
+    for book in BOOKS:
+        if book.id == book_id:
+            return book
 
+            
 #wip delete function
 #@app.delete('/books/delete-book/{book_id}')
 #async def delete_book(book_id: int):

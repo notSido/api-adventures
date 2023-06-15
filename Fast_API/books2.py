@@ -100,6 +100,7 @@ async def delete_book(book_id:int = Path(gt=0)):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_id:
             BOOKS.pop(i)
+            book_deleted = True
             break
     if not book_deleted:
         raise HTTPException(status_code=404, detail='Target not found')
@@ -115,4 +116,5 @@ async def read_book_by_release(published_date:int = Query(gt=1699, lt=3001)):
             return books_to_return
     if not book_found:
         raise HTTPException(status_code=404, detail='No Books found')
+
 

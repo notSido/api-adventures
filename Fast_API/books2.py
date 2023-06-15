@@ -50,7 +50,13 @@ BOOKS = [
 ]
 
 
-
+def find_book_id(book: Book):
+    if len(BOOKS) > 0:
+        book.id = BOOKS[-1].id + 1
+    else:
+        book.id = 1
+    
+    return book
 
 @app.get('/books', status_code=status.HTTP_200_OK)
 async def read_all_books():
@@ -75,14 +81,6 @@ async def read_book_by_rating(rating:int = Query(gt=0, lt=6)):
         if book.rating == rating:
             books_to_return.append(book)
     return books_to_return
-
-def find_book_id(book: Book):
-    if len(BOOKS) > 0:
-        book.id = BOOKS[-1].id + 1
-    else:
-        book.id = 1
-    
-    return book
 
 @app.put('/book/update_book', status_code=status.HTTP_204_NO_CONTENT)
 async def update_book(book: BookRequest):

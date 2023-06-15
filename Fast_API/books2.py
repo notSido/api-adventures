@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Path, Query
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -27,7 +27,7 @@ class BookRequest(BaseModel):
     author: str = Field(min_length=1)
     description: str = Field(min_length=1, max_length=100)
     rating: int = Field(gt=0, lt=6)
-    published_date: int
+    published_date: int = Field(gt=1699, lt=3001)
     
     class Config:
         schema_extra = {
@@ -39,7 +39,6 @@ class BookRequest(BaseModel):
                 'published_date': 1899
             }
         }
-# hello world i am here today to tell you that my name is jeff
 
 BOOKS = [
     Book(1, 'The idiot', 'Fyodor Dostoevsky', 'An exploration of love and life', 5, 1869),
@@ -49,27 +48,26 @@ BOOKS = [
     
 ]
 
+
+
+
 @app.get('/books')
 async def read_all_books():
     return BOOKS
-
-@app.post('/create-book')
-async def create_book(book_request=Body()):
-    BOOKS.append(book_request)
     
-@app.post('/create-book2')
+@app.post('/create-book')
 async def create_book(book_request: BookRequest):
     new_book = Book(**book_request.dict())
     BOOKS.append(find_book_id(new_book))
     
 @app.get('/books/{book_id}')
-async def fetch_book(book_id:int):
+async def fetch_book(book_id:int = Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
 
 @app.get('/books/')
-async def read_book_by_rating(rating:int):
+async def read_book_by_rating(rating:int = Query(gt=0, lt=6)):
     books_to_return = []
     for book in BOOKS:
         if book.rating == rating:
@@ -92,16 +90,17 @@ async def update_book(book: BookRequest):
 
 
 @app.delete('/books/{book_id}')
-async def delete_book(book_id:int):
+async def delete_book(book_id:int = Path(gt=0)):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_id:
             BOOKS.pop(i)
             break
         
 @app.get('/books/published/')
-async def read_book_by_release(published_date:int):
+async def read_book_by_release(published_date:int = Query(gt=1699, lt=3001)):
     books_to_return = []
     for book in BOOKS:
         if book.published_date == published_date:
             books_to_return.append(book)
     return books_to_return
+

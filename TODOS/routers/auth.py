@@ -26,6 +26,10 @@ class CreateUserRequest(BaseModel):
     password: str
     role: str
     
+class Token(BaseModel):
+    access_token: str
+    token_type: str    
+    
 def get_db():
     db = SessionLocal()
     try:
@@ -62,15 +66,15 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
     encode = {'sub': username, 'id': user_id}
     expires = datetime.utcnow() + expires_delta
     encode.update({'exp': expires})
-    jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
-@router.post('/token')
+@router.post('/token', response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], 
                                 db: db_dependancy):
     user = authenticate_user(form_data.username, form_data.password, db)
     
     if not user:
         return 'Failed Authentication'
-    token = create_access_token(user.username, user.id, timedelta(minutes=20))
+    token = create_access_token(user.username, user.id, timedelta(minutes=20)) # type: ignore
     
-    return token
+    return {'access_token': token, 'token_type': 'bearer'}

@@ -4,6 +4,7 @@ from database import engine, SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
+from .auth import getcurrentuser
 
 router = APIRouter()
 
@@ -15,6 +16,7 @@ def get_db():
         db.close()
 
 db_dependancy = Annotated[Session, Depends(get_db)]
+user_dependancy = Annotated[dict, Depends(getcurrentuser)]
 
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3)
@@ -34,8 +36,11 @@ async def read_by_id(db: db_dependancy, todo_id: int = Path(gt=0)):
     raise HTTPException(status_code=404, detail='not found')
 
 @router.post('/todo', status_code=status.HTTP_201_CREATED)
-async def create_todo(db: db_dependancy, todo_request: TodoRequest):
-    todo_model = ToDos(**todo_request.dict())
+async def create_todo(user: user_dependancy, db: db_dependancy, todo_request: TodoRequest):
+    if user is None:
+        raise HTTPException(status_code=401, detail='Authentication Failed')
+    
+    todo_model = ToDos(**todo_request.dict(), owner_id=user.get('id'))
     
     db.add(todo_model)
     db.commit()

@@ -19,7 +19,7 @@ SECRET_KEY = '42ad77a0b0e723c50c8e6a1e5994e86ef15d8075d702ac3fdd298266c32e485c'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated=['auto'])
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl='token')
 
 class CreateUserRequest(BaseModel):
     username: str
@@ -74,7 +74,7 @@ def create_access_token(username: str, user_id: int, expires_delta: timedelta):
 async def getcurrentuser(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get('sido') # type: ignore
+        username: str = payload.get('sub') # type: ignore
         user_id: int = payload.get('id') # type: ignore
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='could not validate user')

@@ -37,6 +37,7 @@ async def read_by_id(db: db_dependancy, todo_id: int = Path(gt=0)):
 
 @router.post('/todo', status_code=status.HTTP_201_CREATED)
 async def create_todo(user: user_dependancy, db: db_dependancy, todo_request: TodoRequest):
+    
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication Failed')
     

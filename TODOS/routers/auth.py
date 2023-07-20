@@ -19,7 +19,7 @@ SECRET_KEY = '42ad77a0b0e723c50c8e6a1e5994e86ef15d8075d702ac3fdd298266c32e485c'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated=['auto'])
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='token')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 class CreateUserRequest(BaseModel):
     username: str

@@ -23,8 +23,6 @@ db_dependancy = Annotated[Session, Depends(get_db)]
 user_dependancy = Annotated[dict, Depends(getcurrentuser)]
 
 
-
-
 @router.get('/todo', status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependancy, db: db_dependancy):
     
